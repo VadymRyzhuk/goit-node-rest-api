@@ -13,10 +13,10 @@ contactsRouter.get("/", getAllContacts);
 
 contactsRouter.get("/:id", getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
-
 contactsRouter.post("/", createContact);
 
 contactsRouter.put("/:id", updateContact);
+
+contactsRouter.delete("/:id", deleteContact);
 
 export default contactsRouter;
