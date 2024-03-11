@@ -12,7 +12,7 @@ contactsRouter.post("/", contactsControllers.createContact);
 
 contactsRouter.put("/:id", isValidId, contactsControllers.updateContact);
 
-contactsRouter.delete("/:id", contactsControllers.deleteContact);
+contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
 contactsRouter.patch(
   "/:id/favorite",

@@ -3,6 +3,7 @@ import HttpError from "../helpers/HttpError.js";
 import {
   createContactSchema,
   updateContactSchema,
+  updateContactFavorite,
 } from "../schemas/contactsSchemas.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -55,7 +56,7 @@ const deleteContact = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
-  const { error } = updateContactSchema.validate(req.body);
+  const { error } = updateContactFavorite.validate(req.body);
   if (error) {
     throw HttpError(400, error.message);
   }
