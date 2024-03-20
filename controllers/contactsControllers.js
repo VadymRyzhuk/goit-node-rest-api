@@ -9,7 +9,8 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await contactsServices.listContacts();
+  const { _id: owner } = req.user;
+  const result = await contactsServices.listContacts({ owner });
   res.json(result);
 };
 
@@ -19,6 +20,7 @@ const getOneContact = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
+
   res.json(result);
 };
 
@@ -27,7 +29,8 @@ const createContact = async (req, res) => {
   if (error) {
     throw HttpError(400, error.message);
   }
-  const result = await contactsServices.addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await contactsServices.addContact({ ...req.body, owner });
   res.status(201).json(result);
 };
 

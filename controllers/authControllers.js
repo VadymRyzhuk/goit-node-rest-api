@@ -9,7 +9,7 @@ const { JWT_SECRET } = process.env;
 
 import { userSignUpSchema, userSignInSchema } from "../schemas/usersSchemas.js";
 
-const signup = async (req, res) => {
+const register = async (req, res) => {
   const { email } = req.body;
   const user = await authServices.findUser({ email });
   if (user) {
@@ -26,11 +26,17 @@ const signup = async (req, res) => {
   });
 };
 
-const signin = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
+
   const user = await authServices.findUser({ email });
+  const { subscription } = user;
   if (!user) {
     throw HttpError(401, "Email or password invalid");
+  }
+  const { error } = userSignInSchema.validate(req.body);
+  if (error) {
+    throw HttpError(400, error.message);
   }
   const comparePassword = await authServices.validatePassword(
     password,
@@ -40,18 +46,38 @@ const signin = async (req, res) => {
     throw HttpError(401, "Email or password invalid");
   }
 
-  const { _id } = user;
+  const { _id: id } = user;
 
   const payload = {
-    _id,
+    id,
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
-  res.json({ token });
+  await authServices.updateUser({ _id: id }, { token });
+
+  res.json({ token, user: { email, subscription } });
+};
+
+const getCurrent = async (req, res) => {
+  const { username, email } = req.user;
+  res.json({
+    username,
+    email,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await authServices.updateUser({ _id }, { token: "" });
+  res.json({
+    message: "Logout success",
+  });
 };
 
 export default {
-  signup: ctrlWrapper(signup),
-  signin: ctrlWrapper(signin),
+  register: ctrlWrapper(register),
+  login: ctrlWrapper(login),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
 };

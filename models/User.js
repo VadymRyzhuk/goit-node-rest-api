@@ -6,17 +6,26 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       match: emailRegexp,
     },
     password: {
       type: String,
       required: true,
+    },
+    token: {
+      type: String,
+      default: null,
+    },
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
     },
   },
   { versionKey: false }
