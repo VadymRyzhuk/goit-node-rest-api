@@ -6,7 +6,7 @@ export const addContact = (data) => Contact.create(data);
 
 export const getContactById = (id) => Contact.findById(id);
 
-export const getOneContact = (filter) => Contact.findOne(filter);
+export const getOnlyOneContact = (filter) => Contact.findOne(filter);
 
 export const updateContactById = (id, data) =>
   Contact.findByIdAndUpdate(id, data, { new: true, runValidators: true });

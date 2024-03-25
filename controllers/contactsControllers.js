@@ -18,7 +18,7 @@ const getOneContact = async (req, res) => {
   const { id } = req.params;
   const { _id: owner } = req.user;
   //const result = await contactsServices.getContactById(id);
-  const result = await contactsServices.getOneMovie({ _id: id, owner });
+  const result = await contactsServices.getOnlyOneContact({ _id: id, owner });
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
