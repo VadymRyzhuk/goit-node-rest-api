@@ -9,16 +9,20 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await contactsServices.listContacts();
+  const { _id: owner } = req.user;
+  const result = await contactsServices.listContacts({ owner });
   res.json(result);
 };
 
 const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.getContactById(id);
+  const { _id: owner } = req.user;
+  //const result = await contactsServices.getContactById(id);
+  const result = await contactsServices.getOnlyOneContact({ _id: id, owner });
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
+
   res.json(result);
 };
 
@@ -27,7 +31,8 @@ const createContact = async (req, res) => {
   if (error) {
     throw HttpError(400, error.message);
   }
-  const result = await contactsServices.addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await contactsServices.addContact({ ...req.body, owner });
   res.status(201).json(result);
 };
 
@@ -37,7 +42,12 @@ const updateContact = async (req, res) => {
     throw HttpError(400, error.message);
   }
   const { id } = req.params;
-  const result = await contactsServices.updateContactById(id, req.body);
+  const { _id: owner } = req.user;
+  //const result = await contactsServices.updateContactById(id, req.body);
+  const result = await contactsServices.updateOneContact(
+    { _id: id, owner },
+    req.body
+  );
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
@@ -46,7 +56,9 @@ const updateContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.removeContact(id);
+  const { _id: owner } = req.user;
+  //const result = await contactsServices.removeContact(id);
+  const result = await contactsServices.deleteOneContact({ _id: id, owner });
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
@@ -61,9 +73,14 @@ const updateStatusContact = async (req, res) => {
     throw HttpError(400, error.message);
   }
   const { id } = req.params;
+  const { _id: owner } = req.user;
   const { favorite } = req.body;
 
-  const result = await contactsServices.updateContactById(id, { favorite });
+  //const result = await contactsServices.updateContactById(id, { favorite });
+  const result = await contactsServices.updateStatusOfOneContact(
+    { _id: id, owner },
+    { favorite }
+  );
   if (!result) {
     throw HttpError(404, `Contact with id = ${id} NOT FOUND`);
   }
