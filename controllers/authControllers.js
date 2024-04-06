@@ -71,7 +71,7 @@ const resendVerify = async (req, res) => {
   const user = await authServices.findUser({ email });
   const { error } = userEmailSchema.validate(req.body);
   if (!user) {
-    throw HttpError(400, "Email already verify");
+    throw HttpError(400, "Verification has already been passed");
   }
   if (user.verify) {
     throw HttpError(404, "Email not found");
