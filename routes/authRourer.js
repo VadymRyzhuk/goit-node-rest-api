@@ -7,6 +7,10 @@ const authRouter = express.Router();
 
 authRouter.post("/register", upload.single("avatar"), authControllers.register);
 
+authRouter.get("/verify/:verificationToken", authControllers.verify);
+
+authRouter.post("/verify", authControllers.resendVerify);
+
 authRouter.post("/login", authControllers.login);
 
 authRouter.get("/current", authenticate, authControllers.getCurrent);
